@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "63517360107",
+    "project_id": "memoapp-firebase-practic-f443d",
+    "storage_bucket": "memoapp-firebase-practic-f443d.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:63517360107:android:75bd00d957aef48da3a3ae",
+        "android_client_info": {
+          "package_name": "com.example.memoapp_firebase_practice"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAHHy0hdu-DOhKPiirE689QLr-PPjJIMDE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
