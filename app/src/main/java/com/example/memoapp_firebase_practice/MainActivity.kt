@@ -1,4 +1,4 @@
-ㄏpackage com.example.memoapp_firebase_practice
+package com.example.memoapp_firebase_practice
 
 import android.os.Bundle
 import androidx.activity.enableEdgeToEdge
