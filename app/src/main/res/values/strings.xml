@@ -1,6 +1,8 @@
 <resources>
     <string name="app_name">MemoApp_Firebase_Practice</string>
     <string name="favorite">favorite</string>
+    <string name="menu_settings">設定</string>
+
 
     <string-array name="sort_options">
         <item>建立時間（新→舊）</item>
