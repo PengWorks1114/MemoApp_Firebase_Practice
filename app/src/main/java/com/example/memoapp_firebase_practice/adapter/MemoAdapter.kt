@@ -34,4 +34,5 @@ class MemoAdapter(
     }
 
     override fun getItemCount(): Int = items.size
+
 }

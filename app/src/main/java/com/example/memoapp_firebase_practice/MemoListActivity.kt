@@ -1,9 +1,9 @@
 package com.example.memoapp_firebase_practice
 
-import android.content.DialogInterface
 import android.content.Intent
 import android.graphics.*
 import android.os.Bundle
+import android.widget.SearchView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -21,17 +21,22 @@ class MemoListActivity : AppCompatActivity() {
     private lateinit var db: FirebaseFirestore
     private lateinit var recyclerView: RecyclerView
     private lateinit var memoAdapter: MemoAdapter
-    private val memoList = mutableListOf<Memo>()
+    private lateinit var searchView: SearchView
+
+    private val memoList = mutableListOf<Memo>()       // 所有資料
+    private val filteredList = mutableListOf<Memo>()   // 顯示用資料
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_memo_list)
 
         db = FirebaseFirestore.getInstance()
+
+        // 初始化 RecyclerView
         recyclerView = findViewById(R.id.recyclerView)
         recyclerView.layoutManager = LinearLayoutManager(this)
 
-        memoAdapter = MemoAdapter(memoList) { memo ->
+        memoAdapter = MemoAdapter(filteredList) { memo ->
             val intent = Intent(this, MemoEditActivity::class.java)
             intent.putExtra("memoId", memo.id)
             intent.putExtra("title", memo.title)
@@ -40,21 +45,24 @@ class MemoListActivity : AppCompatActivity() {
         }
         recyclerView.adapter = memoAdapter
 
-        // 設定左滑刪除 + 確認視窗
-        val itemTouchHelper = ItemTouchHelper(object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
-            override fun onMove(
-                recyclerView: RecyclerView,
-                viewHolder: RecyclerView.ViewHolder,
-                target: RecyclerView.ViewHolder
-            ): Boolean {
-                return false
+        // 初始化 SearchView
+        searchView = findViewById(R.id.searchView)
+        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean = false
+            override fun onQueryTextChange(newText: String?): Boolean {
+                filterMemoList(newText ?: "")
+                return true
             }
+        })
+
+        // 左滑刪除＋確認
+        val itemTouchHelper = ItemTouchHelper(object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
+            override fun onMove(rv: RecyclerView, vh: RecyclerView.ViewHolder, t: RecyclerView.ViewHolder) = false
 
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                 val position = viewHolder.adapterPosition
-                val memo = memoList[position]
+                val memo = filteredList[position]
 
-                // 顯示確認對話框
                 AlertDialog.Builder(this@MemoListActivity)
                     .setTitle("確認刪除")
                     .setMessage("是否確定要刪除這筆記事？")
@@ -62,8 +70,8 @@ class MemoListActivity : AppCompatActivity() {
                         db.collection("memos").document(memo.id)
                             .delete()
                             .addOnSuccessListener {
-                                memoList.removeAt(position)
-                                memoAdapter.notifyItemRemoved(position)
+                                memoList.removeIf { it.id == memo.id }
+                                filterMemoList(searchView.query.toString())
                                 Toast.makeText(this@MemoListActivity, "刪除成功", Toast.LENGTH_SHORT).show()
                             }
                             .addOnFailureListener {
@@ -78,17 +86,11 @@ class MemoListActivity : AppCompatActivity() {
                     .show()
             }
 
-            // 繪製紅色背景與刪除圖示
-            override fun onChildDraw(
-                c: Canvas, recyclerView: RecyclerView,
-                viewHolder: RecyclerView.ViewHolder, dX: Float, dY: Float,
-                actionState: Int, isCurrentlyActive: Boolean
-            ) {
-                super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
+            override fun onChildDraw(c: Canvas, rv: RecyclerView, vh: RecyclerView.ViewHolder, dX: Float, dY: Float, state: Int, isActive: Boolean) {
+                super.onChildDraw(c, rv, vh, dX, dY, state, isActive)
 
-                val itemView = viewHolder.itemView
-                val paint = Paint()
-                paint.color = Color.RED
+                val itemView = vh.itemView
+                val paint = Paint().apply { color = Color.RED }
 
                 c.drawRect(
                     itemView.right.toFloat() + dX,
@@ -114,7 +116,6 @@ class MemoListActivity : AppCompatActivity() {
 
         itemTouchHelper.attachToRecyclerView(recyclerView)
 
-        // 點擊新增按鈕
         findViewById<FloatingActionButton>(R.id.fabAdd).setOnClickListener {
             startActivity(Intent(this, MemoEditActivity::class.java))
         }
@@ -142,7 +143,21 @@ class MemoListActivity : AppCompatActivity() {
                     )
                     memoList.add(memo)
                 }
-                memoAdapter.notifyDataSetChanged()
+                filterMemoList(searchView.query.toString())
             }
+    }
+
+    private fun filterMemoList(keyword: String) {
+        filteredList.clear()
+        if (keyword.isEmpty()) {
+            filteredList.addAll(memoList)
+        } else {
+            for (memo in memoList) {
+                if (memo.title.contains(keyword, true) || memo.content.contains(keyword, true)) {
+                    filteredList.add(memo)
+                }
+            }
+        }
+        memoAdapter.notifyDataSetChanged()
     }
 }

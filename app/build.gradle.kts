@@ -10,7 +10,7 @@ android {
 
     defaultConfig {
         applicationId = "com.example.memoapp_firebase_practice"
-        minSdk = 23
+        minSdk = 24
         targetSdk = 35
         versionCode = 1
         versionName = "1.0"
