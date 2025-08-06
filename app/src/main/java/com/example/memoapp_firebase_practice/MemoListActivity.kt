@@ -17,6 +17,7 @@ import com.example.memoapp_firebase_practice.adapter.MemoAdapter
 import com.example.memoapp_firebase_practice.model.Memo
 import com.example.memoapp_firebase_practice.model.SortType
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 
 class MemoListActivity : AppCompatActivity() {
@@ -160,7 +161,14 @@ class MemoListActivity : AppCompatActivity() {
     }
 
     private fun loadMemos() {
+        val userId = FirebaseAuth.getInstance().currentUser?.uid
+        if (userId == null) {
+            Toast.makeText(this, "尚未登入，無法載入資料", Toast.LENGTH_SHORT).show()
+            return
+        }
+
         db.collection("memos")
+            .whereEqualTo("userId", userId) // 🔸 加入使用者條件
             .orderBy("timestamp", com.google.firebase.firestore.Query.Direction.DESCENDING)
             .get()
             .addOnSuccessListener { result ->
@@ -177,7 +185,11 @@ class MemoListActivity : AppCompatActivity() {
                 }
                 filterMemoList(searchView.query.toString())
             }
+            .addOnFailureListener {
+                Toast.makeText(this, "資料載入失敗: ${it.message}", Toast.LENGTH_SHORT).show()
+            }
     }
+
 
     private fun filterMemoList(keyword: String) {
         filteredList.clear()
