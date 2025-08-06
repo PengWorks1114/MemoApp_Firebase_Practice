@@ -139,7 +139,8 @@ class MemoListActivity : AppCompatActivity() {
                         id = doc.id,
                         title = doc.getString("title") ?: "",
                         content = doc.getString("content") ?: "",
-                        timestamp = doc.getLong("timestamp") ?: 0L
+                        timestamp = doc.getLong("timestamp") ?: 0L,
+                        favorite = doc.getBoolean("favorite") ?: false
                     )
                     memoList.add(memo)
                 }
