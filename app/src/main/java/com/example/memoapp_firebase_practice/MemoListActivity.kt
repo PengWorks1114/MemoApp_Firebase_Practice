@@ -3,6 +3,8 @@ package com.example.memoapp_firebase_practice
 import android.content.Intent
 import android.graphics.*
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
 import android.widget.SearchView
 import android.widget.Spinner
 import android.widget.ArrayAdapter
@@ -214,4 +216,20 @@ class MemoListActivity : AppCompatActivity() {
         }
         memoAdapter.notifyDataSetChanged()
     }
+
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        menuInflater.inflate(R.menu.menu_memo_list, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.menu_settings -> {
+                startActivity(Intent(this, SettingsActivity::class.java))
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
+
 }
