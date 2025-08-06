@@ -3,6 +3,7 @@ package com.example.memoapp_firebase_practice
 import android.content.Intent
 import android.graphics.*
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.SearchView
@@ -111,6 +112,7 @@ class MemoListActivity : BaseActivity() {
                                 Toast.makeText(this@MemoListActivity, "刪除成功", Toast.LENGTH_SHORT).show()
                             }
                             .addOnFailureListener {
+                                Log.e("Firestore", "刪除失敗", it)
                                 Toast.makeText(this@MemoListActivity, "刪除失敗: ${it.message}", Toast.LENGTH_SHORT).show()
                                 memoAdapter.notifyItemChanged(position)
                             }
@@ -188,6 +190,7 @@ class MemoListActivity : BaseActivity() {
                 filterMemoList(searchView.query.toString())
             }
             .addOnFailureListener {
+                Log.e("Firestore", "資料載入失敗", it)
                 Toast.makeText(this, "資料載入失敗: ${it.message}", Toast.LENGTH_SHORT).show()
             }
     }

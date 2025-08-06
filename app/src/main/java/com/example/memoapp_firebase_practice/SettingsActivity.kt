@@ -2,18 +2,16 @@ package com.example.memoapp_firebase_practice
 
 import android.content.Intent
 import android.os.Bundle
-import android.widget.ArrayAdapter
-import android.widget.Button
-import android.widget.Spinner
-import android.widget.Toast
+import android.view.View
+import android.widget.*
 import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
 
 class SettingsActivity : BaseActivity() {
 
     private lateinit var spinnerLanguage: Spinner
     private lateinit var btnDeleteAccount: Button
+    private var isFirstLanguageLoad = true // ✅ 避免 onItemSelected 初次觸發
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -22,7 +20,7 @@ class SettingsActivity : BaseActivity() {
         btnDeleteAccount = findViewById(R.id.btnDeleteAccount)
         spinnerLanguage = findViewById(R.id.spinnerLanguage)
 
-        // 🔐 帳號刪除邏輯
+        // 🔐 Firebase 帳號刪除功能
         btnDeleteAccount.setOnClickListener {
             AlertDialog.Builder(this)
                 .setTitle("確認刪除帳號")
@@ -42,32 +40,32 @@ class SettingsActivity : BaseActivity() {
                 .show()
         }
 
-        // 🌐 語言選單
-// 🌐 語言選單
+        // 🌐 語言切換 Spinner 設定
         val languageList = listOf("中文", "日本語", "English")
         val languageCodes = listOf("zh", "ja", "en")
-
         val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, languageList)
         spinnerLanguage.adapter = adapter
 
-// 選擇當前語言對應位置
-        val currentLang = LocaleHelper.getCurrentLanguage()
+        // 🔍 設定預設語言位置
+        val currentLang = LocaleHelper.getCurrentLanguage(this)
         val defaultIndex = languageCodes.indexOf(currentLang).takeIf { it != -1 } ?: 0
         spinnerLanguage.setSelection(defaultIndex)
 
-        spinnerLanguage.setOnItemSelectedListener(object : android.widget.AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parent: android.widget.AdapterView<*>, view: android.view.View?, position: Int, id: Long) {
+        // 🌀 語言選擇事件
+        spinnerLanguage.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
+                if (isFirstLanguageLoad) {
+                    isFirstLanguageLoad = false
+                    return
+                }
                 val selectedLang = languageCodes[position]
-                if (selectedLang != LocaleHelper.getCurrentLanguage()) {
+                if (selectedLang != LocaleHelper.getCurrentLanguage(this@SettingsActivity)) {
                     LocaleHelper.setLocale(this@SettingsActivity, selectedLang)
-
-                    // 🔄 重啟當前 Activity 生效
                     recreate()
                 }
             }
 
-            override fun onNothingSelected(parent: android.widget.AdapterView<*>) {}
-        })
-
+            override fun onNothingSelected(parent: AdapterView<*>) {}
+        }
     }
 }
