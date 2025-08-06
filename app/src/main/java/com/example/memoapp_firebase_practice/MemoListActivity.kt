@@ -22,7 +22,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 
-class MemoListActivity : AppCompatActivity() {
+class MemoListActivity : BaseActivity() {
 
     private lateinit var db: FirebaseFirestore
     private lateinit var recyclerView: RecyclerView

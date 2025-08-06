@@ -9,7 +9,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import java.util.*
 
-class MemoEditActivity : AppCompatActivity() {
+class MemoEditActivity : BaseActivity() {
 
     private lateinit var db: FirebaseFirestore
     private var memoId: String? = null // 若為 null 則代表新增
