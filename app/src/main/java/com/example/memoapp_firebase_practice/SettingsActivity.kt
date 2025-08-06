@@ -43,10 +43,31 @@ class SettingsActivity : AppCompatActivity() {
         }
 
         // 🌐 語言選單
+// 🌐 語言選單
         val languageList = listOf("中文", "日本語", "English")
+        val languageCodes = listOf("zh", "ja", "en")
+
         val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, languageList)
         spinnerLanguage.adapter = adapter
 
-        // 👉 實作語言切換邏輯將於後續 Step 完成
+// 選擇當前語言對應位置
+        val currentLang = LocaleHelper.getCurrentLanguage()
+        val defaultIndex = languageCodes.indexOf(currentLang).takeIf { it != -1 } ?: 0
+        spinnerLanguage.setSelection(defaultIndex)
+
+        spinnerLanguage.setOnItemSelectedListener(object : android.widget.AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: android.widget.AdapterView<*>, view: android.view.View?, position: Int, id: Long) {
+                val selectedLang = languageCodes[position]
+                if (selectedLang != LocaleHelper.getCurrentLanguage()) {
+                    LocaleHelper.setLocale(this@SettingsActivity, selectedLang)
+
+                    // 🔄 重啟當前 Activity 生效
+                    recreate()
+                }
+            }
+
+            override fun onNothingSelected(parent: android.widget.AdapterView<*>) {}
+        })
+
     }
 }
