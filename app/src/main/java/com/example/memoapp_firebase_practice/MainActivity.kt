@@ -1,20 +1,37 @@
 package com.example.memoapp_firebase_practice
 
+import android.content.Intent
 import android.os.Bundle
-import androidx.activity.enableEdgeToEdge
+import android.os.Handler
+import android.os.Looper
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
+import com.google.firebase.auth.FirebaseAuth
 
 class MainActivity : AppCompatActivity() {
+
+    private lateinit var auth: FirebaseAuth
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
         setContentView(R.layout.activity_main)
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
-        }
+
+        auth = FirebaseAuth.getInstance()
+
+        // 顯示簡易 Logo（可之後改為圖片）
+        val textView = findViewById<TextView>(R.id.textViewLogo)
+        textView.text = "Memo App" // 初期以文字顯示
+
+        // 模擬延遲 1 秒作為開場 Logo
+        Handler(Looper.getMainLooper()).postDelayed({
+            if (auth.currentUser != null) {
+                // 已登入，跳到清單
+                startActivity(Intent(this, MemoListActivity::class.java))
+            } else {
+                // 未登入，跳到登入
+                startActivity(Intent(this, LoginActivity::class.java))
+            }
+            finish()
+        }, 1000)
     }
 }
