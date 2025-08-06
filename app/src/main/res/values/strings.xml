@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">MemoApp_Firebase_Practice</string>
+    <string name="favorite">favorite</string>
 </resources>

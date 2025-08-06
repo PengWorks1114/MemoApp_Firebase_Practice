@@ -4,19 +4,27 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <!-- 🔍 搜尋欄 -->
-    <SearchView
-        android:id="@+id/searchView"
+    <!-- 📦 垂直排版容器：SearchView + RecyclerView -->
+    <LinearLayout
+        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:queryHint="請輸入關鍵字..." />
+        android:layout_height="match_parent">
 
-    <!-- 🗒️ 清單列表 -->
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:padding="16dp" />
+        <!-- 🔍 搜尋欄 -->
+        <SearchView
+            android:id="@+id/searchView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:queryHint="請輸入關鍵字..." />
+
+        <!-- 🗒️ 清單列表 -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:padding="16dp" />
+    </LinearLayout>
 
     <!-- ➕ 新增按鈕 -->
     <com.google.android.material.floatingactionbutton.FloatingActionButton

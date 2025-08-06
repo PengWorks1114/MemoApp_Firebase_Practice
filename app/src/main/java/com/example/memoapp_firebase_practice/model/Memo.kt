@@ -6,5 +6,5 @@ data class Memo(
     var title: String = "",
     var content: String = "",
     var timestamp: Long = 0L,      // 時間戳（儲存為毫秒）
-    val favorite: Boolean = false
+    var favorite: Boolean = false
 )

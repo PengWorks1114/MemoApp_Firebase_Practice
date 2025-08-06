@@ -32,20 +32,31 @@ class MemoListActivity : AppCompatActivity() {
 
         db = FirebaseFirestore.getInstance()
 
-        // 初始化 RecyclerView
         recyclerView = findViewById(R.id.recyclerView)
         recyclerView.layoutManager = LinearLayoutManager(this)
 
-        memoAdapter = MemoAdapter(filteredList) { memo ->
-            val intent = Intent(this, MemoEditActivity::class.java)
-            intent.putExtra("memoId", memo.id)
-            intent.putExtra("title", memo.title)
-            intent.putExtra("content", memo.content)
-            startActivity(intent)
-        }
+        memoAdapter = MemoAdapter(filteredList,
+            onItemClick = { memo ->
+                val intent = Intent(this, MemoEditActivity::class.java)
+                intent.putExtra("memoId", memo.id)
+                intent.putExtra("title", memo.title)
+                intent.putExtra("content", memo.content)
+                startActivity(intent)
+            },
+            onFavoriteClick = { memo ->
+                val newFavorite = !memo.favorite
+                db.collection("memos").document(memo.id)
+                    .update("favorite", newFavorite)
+                    .addOnSuccessListener {
+                        memo.favorite = newFavorite
+                        memoAdapter.notifyDataSetChanged()
+                        Toast.makeText(this,
+                            if (newFavorite) "已加入最愛" else "已移除最愛", Toast.LENGTH_SHORT).show()
+                    }
+            }
+        )
         recyclerView.adapter = memoAdapter
 
-        // 初始化 SearchView
         searchView = findViewById(R.id.searchView)
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean = false
@@ -55,7 +66,6 @@ class MemoListActivity : AppCompatActivity() {
             }
         })
 
-        // 左滑刪除＋確認
         val itemTouchHelper = ItemTouchHelper(object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
             override fun onMove(rv: RecyclerView, vh: RecyclerView.ViewHolder, t: RecyclerView.ViewHolder) = false
 
@@ -88,7 +98,6 @@ class MemoListActivity : AppCompatActivity() {
 
             override fun onChildDraw(c: Canvas, rv: RecyclerView, vh: RecyclerView.ViewHolder, dX: Float, dY: Float, state: Int, isActive: Boolean) {
                 super.onChildDraw(c, rv, vh, dX, dY, state, isActive)
-
                 val itemView = vh.itemView
                 val paint = Paint().apply { color = Color.RED }
 
@@ -113,7 +122,6 @@ class MemoListActivity : AppCompatActivity() {
                 }
             }
         })
-
         itemTouchHelper.attachToRecyclerView(recyclerView)
 
         findViewById<FloatingActionButton>(R.id.fabAdd).setOnClickListener {
