@@ -5,6 +5,7 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import java.util.*
 
@@ -64,11 +65,20 @@ class MemoEditActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
 
+            val userId = FirebaseAuth.getInstance().currentUser?.uid
+            if (userId == null) {
+                Toast.makeText(this, "尚未登入，無法儲存資料", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
             val memoData = hashMapOf(
                 "title" to title,
                 "content" to content,
-                "timestamp" to Date().time
+                "timestamp" to Date().time,
+                "favorite" to false, // 新增時預設為未加最愛
+                "userId" to userId   // 🔸 新增 userId 欄位
             )
+
 
             if (memoId == null) {
                 // 新增
