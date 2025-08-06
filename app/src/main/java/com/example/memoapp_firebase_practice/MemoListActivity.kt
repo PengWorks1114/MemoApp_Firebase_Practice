@@ -38,6 +38,9 @@ class MemoListActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_memo_list)
 
+        val toolbar = findViewById<androidx.appcompat.widget.Toolbar>(R.id.toolbar)
+        setSupportActionBar(toolbar)
+
         db = FirebaseFirestore.getInstance()
 
         recyclerView = findViewById(R.id.recyclerView)
@@ -234,5 +237,7 @@ class MemoListActivity : BaseActivity() {
             else -> super.onOptionsItemSelected(item)
         }
     }
+
+
 
 }
