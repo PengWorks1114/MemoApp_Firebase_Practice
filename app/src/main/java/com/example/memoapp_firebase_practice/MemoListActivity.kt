@@ -43,6 +43,12 @@ class MemoListActivity : AppCompatActivity() {
         loadMemos()
     }
 
+    override fun onResume() {
+        super.onResume()
+        loadMemos()
+    }
+
+
     private fun loadMemos() {
         db.collection("memos")
             .orderBy("timestamp", com.google.firebase.firestore.Query.Direction.DESCENDING)
