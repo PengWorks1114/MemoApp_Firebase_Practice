@@ -1,2 +1,12 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+    <string name="app_name">メモ練習アプリ</string>
+    <string name="favorite">お気に入り</string>
+    <string name="menu_settings">設定</string>
+
+    <string-array name="sort_options">
+        <item>作成日時（新しい順）</item>
+        <item>作成日時（古い順）</item>
+        <item>タイトル（A→Z）</item>
+        <item>お気に入り優先</item>
+    </string-array>
+</resources>
