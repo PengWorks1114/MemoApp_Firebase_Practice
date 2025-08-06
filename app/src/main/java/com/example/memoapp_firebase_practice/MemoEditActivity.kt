@@ -22,11 +22,30 @@ class MemoEditActivity : AppCompatActivity() {
         val etTitle = findViewById<EditText>(R.id.etTitle)
         val etContent = findViewById<EditText>(R.id.etContent)
         val btnSave = findViewById<Button>(R.id.btnSave)
+        val btnDelete = findViewById<Button>(R.id.btnDelete)
 
         // 接收傳入資料
         memoId = intent.getStringExtra("memoId")
         etTitle.setText(intent.getStringExtra("title") ?: "")
         etContent.setText(intent.getStringExtra("content") ?: "")
+
+
+        //刪除邏輯
+        if (memoId != null) {
+            btnDelete.visibility = Button.VISIBLE
+            btnDelete.setOnClickListener {
+                db.collection("memos").document(memoId!!)
+                    .delete()
+                    .addOnSuccessListener {
+                        Toast.makeText(this, "刪除成功", Toast.LENGTH_SHORT).show()
+                        finish()
+                    }
+                    .addOnFailureListener {
+                        Toast.makeText(this, "刪除失敗: ${it.message}", Toast.LENGTH_SHORT).show()
+                    }
+            }
+        }
+
 
         btnSave.setOnClickListener {
             val title = etTitle.text.toString().trim()
