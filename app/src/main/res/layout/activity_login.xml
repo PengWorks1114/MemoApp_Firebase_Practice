@@ -24,17 +24,13 @@
     <Button
         android:id="@+id/btnLogin"
         android:text="登入"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="24dp" />
+        style="@style/RoundedButton"/>
 
     <!-- 在 res/layout/activity_login.xml 最下方加上 -->
 
     <Button
         android:id="@+id/btnRegister"
         android:text="註冊新帳號"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp" />
+        style="@style/RoundedButton" />
 
 </LinearLayout>
