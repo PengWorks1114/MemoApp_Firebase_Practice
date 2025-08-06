@@ -1,4 +1,12 @@
 <resources>
     <string name="app_name">MemoApp_Firebase_Practice</string>
     <string name="favorite">favorite</string>
+
+    <string-array name="sort_options">
+        <item>建立時間（新→舊）</item>
+        <item>建立時間（舊→新）</item>
+        <item>標題（A→Z）</item>
+        <item>最愛優先</item>
+    </string-array>
+
 </resources>

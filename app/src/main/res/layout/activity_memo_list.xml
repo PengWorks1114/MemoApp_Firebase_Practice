@@ -4,11 +4,20 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <!-- 📦 垂直排版容器：SearchView + RecyclerView -->
+    <!-- 📦 垂直排版容器：Spinner + SearchView + RecyclerView -->
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:padding="8dp">
+
+        <!-- 🔽 排序下拉選單 -->
+        <Spinner
+            android:id="@+id/spinnerSort"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:entries="@array/sort_options"
+            android:layout_marginBottom="18dp" />
 
         <!-- 🔍 搜尋欄 -->
         <SearchView

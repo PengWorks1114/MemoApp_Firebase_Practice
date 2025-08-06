@@ -4,6 +4,8 @@ import android.content.Intent
 import android.graphics.*
 import android.os.Bundle
 import android.widget.SearchView
+import android.widget.Spinner
+import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -13,6 +15,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.memoapp_firebase_practice.adapter.MemoAdapter
 import com.example.memoapp_firebase_practice.model.Memo
+import com.example.memoapp_firebase_practice.model.SortType
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.firestore.FirebaseFirestore
 
@@ -22,6 +25,7 @@ class MemoListActivity : AppCompatActivity() {
     private lateinit var recyclerView: RecyclerView
     private lateinit var memoAdapter: MemoAdapter
     private lateinit var searchView: SearchView
+    private lateinit var sortSpinner: Spinner
 
     private val memoList = mutableListOf<Memo>()       // 所有資料
     private val filteredList = mutableListOf<Memo>()   // 顯示用資料
@@ -64,6 +68,25 @@ class MemoListActivity : AppCompatActivity() {
                 filterMemoList(newText ?: "")
                 return true
             }
+        })
+
+        sortSpinner = findViewById(R.id.spinnerSort)
+        val sortOptions = arrayOf("時間：新 → 舊", "時間：舊 → 新", "標題 A→Z", "最愛優先")
+        sortSpinner.adapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, sortOptions)
+        sortSpinner.setSelection(0)
+        sortSpinner.setOnItemSelectedListener(object : android.widget.AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: android.widget.AdapterView<*>, view: android.view.View, position: Int, id: Long) {
+                val selectedSort = when (position) {
+                    0 -> SortType.TIME_DESC
+                    1 -> SortType.TIME_ASC
+                    2 -> SortType.TITLE_ASC
+                    3 -> SortType.FAVORITE
+                    else -> SortType.TIME_DESC
+                }
+                sortMemoList(selectedSort)
+            }
+
+            override fun onNothingSelected(parent: android.widget.AdapterView<*>) {}
         })
 
         val itemTouchHelper = ItemTouchHelper(object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
@@ -166,6 +189,16 @@ class MemoListActivity : AppCompatActivity() {
                     filteredList.add(memo)
                 }
             }
+        }
+        memoAdapter.notifyDataSetChanged()
+    }
+
+    private fun sortMemoList(type: SortType) {
+        when (type) {
+            SortType.TIME_DESC -> filteredList.sortByDescending { it.timestamp }
+            SortType.TIME_ASC -> filteredList.sortBy { it.timestamp }
+            SortType.TITLE_ASC -> filteredList.sortBy { it.title }
+            SortType.FAVORITE -> filteredList.sortWith(compareByDescending<Memo> { it.favorite }.thenByDescending { it.timestamp })
         }
         memoAdapter.notifyDataSetChanged()
     }
