@@ -4,12 +4,21 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <!-- 🔍 搜尋欄 -->
+    <SearchView
+        android:id="@+id/searchView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:queryHint="請輸入關鍵字..." />
+
+    <!-- 🗒️ 清單列表 -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:padding="16dp" />
-
+    
+    <!-- ➕ 新增按鈕 -->
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fabAdd"
         android:layout_width="wrap_content"
