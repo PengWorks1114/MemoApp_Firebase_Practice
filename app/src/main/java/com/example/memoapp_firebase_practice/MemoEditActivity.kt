@@ -34,16 +34,24 @@ class MemoEditActivity : AppCompatActivity() {
         if (memoId != null) {
             btnDelete.visibility = Button.VISIBLE
             btnDelete.setOnClickListener {
-                db.collection("memos").document(memoId!!)
-                    .delete()
-                    .addOnSuccessListener {
-                        Toast.makeText(this, "刪除成功", Toast.LENGTH_SHORT).show()
-                        finish()
+                androidx.appcompat.app.AlertDialog.Builder(this)
+                    .setTitle("確認刪除")
+                    .setMessage("確定要刪除此筆備忘錄嗎？此操作無法還原。")
+                    .setPositiveButton("刪除") { _, _ ->
+                        db.collection("memos").document(memoId!!)
+                            .delete()
+                            .addOnSuccessListener {
+                                Toast.makeText(this, "刪除成功", Toast.LENGTH_SHORT).show()
+                                finish()
+                            }
+                            .addOnFailureListener {
+                                Toast.makeText(this, "刪除失敗: ${it.message}", Toast.LENGTH_SHORT).show()
+                            }
                     }
-                    .addOnFailureListener {
-                        Toast.makeText(this, "刪除失敗: ${it.message}", Toast.LENGTH_SHORT).show()
-                    }
+                    .setNegativeButton("取消", null)
+                    .show()
             }
+
         }
 
 
