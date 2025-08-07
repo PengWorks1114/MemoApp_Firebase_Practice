@@ -5,8 +5,8 @@ import androidx.appcompat.app.AppCompatActivity
 
 open class BaseActivity : AppCompatActivity() {
     override fun attachBaseContext(newBase: Context) {
-        val lang = LocaleHelper.getCurrentLanguage(newBase)
-        val context = LocaleHelper.setLocale(newBase, lang)
+        val context = LocaleHelper.onAttach(newBase)
         super.attachBaseContext(context)
     }
+
 }

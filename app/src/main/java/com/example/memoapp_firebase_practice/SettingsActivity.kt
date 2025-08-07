@@ -60,8 +60,13 @@ class SettingsActivity : BaseActivity() {
                 }
                 val selectedLang = languageCodes[position]
                 if (selectedLang != LocaleHelper.getCurrentLanguage(this@SettingsActivity)) {
+                    // ✅ 套用語言並重啟 App 主畫面
                     LocaleHelper.setLocale(this@SettingsActivity, selectedLang)
-                    recreate()
+
+                    val intent = Intent(this@SettingsActivity, MemoListActivity::class.java)
+                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                    startActivity(intent)
+                    finish()
                 }
             }
 

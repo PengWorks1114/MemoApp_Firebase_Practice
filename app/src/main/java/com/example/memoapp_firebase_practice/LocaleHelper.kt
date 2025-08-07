@@ -43,4 +43,10 @@ object LocaleHelper {
         val prefs: SharedPreferences = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
         prefs.edit().putString(KEY_LANGUAGE, language).apply()
     }
+
+    fun onAttach(context: Context): Context {
+        val lang = getCurrentLanguage(context)
+        return setLocale(context, lang)
+    }
+
 }
